@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Movie;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,11 +15,39 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed some categories
+        $categories = collect(['Ação', 'Drama', 'Comédia', 'Ficção Científica', 'Terror'])
+            ->map(fn ($name) => Category::firstOrCreate(['name' => $name]));
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Optionally create sample movies if factory exists
+        if (class_exists(\Database\Factories\MovieFactory::class)) {
+            Movie::factory()
+                ->count(15)
+                ->state(function () use ($categories) {
+                    return [
+                        'category_id' => $categories->random()->id,
+                    ];
+                })
+                ->create();
+        }
+
+        // Admin user
+        User::updateOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin',
+                'password' => 'admin',
+                'is_admin' => true,
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'user@user.com'],
+            [
+                'name' => 'userteste',
+                'password' => 'user',
+                'is_admin' => false,
+            ]
+        );
     }
 }
