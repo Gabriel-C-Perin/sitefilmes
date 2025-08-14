@@ -10,11 +10,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Public catalog
+// catalogo publico
 Route::get('/filmes', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/filmes/{movie}', [CatalogController::class, 'show'])->name('catalog.show');
 
-// Auth
+// Autenticação
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -22,7 +22,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.st
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout.post');
 
-// Admin routes (protected)
+// middleware rotas admin
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 	Route::resource('categories', AdminCategoryController::class);
 	Route::resource('movies', AdminMovieController::class);
