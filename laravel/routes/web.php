@@ -7,7 +7,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Public catalog
